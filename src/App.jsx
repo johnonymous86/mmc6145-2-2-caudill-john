@@ -6,6 +6,8 @@ import { useTimer } from "./util/customHooks";
 
 export default function App() {
   const [showModal, setShowModal] = useState(false);
+  const [bestTime, setBestTime] = useState(false);
+  const [previousTime, setPreviousTime] = useState(null);
 
   const {
     time,
@@ -23,15 +25,31 @@ export default function App() {
     "Duck 🦆",
   ];
 
+  const handleGameStart = () => {
+    timerReset();
+    timerStart();
+  };
+
+  const handleGameEnd = () => {
+    timerStop();
+    setPreviousTime(time);
+    if (bestTime === null || time < bestTime) {
+      setBestTime(time);
+    }
+  }; 
+
   return (
     <>
       <Header
-        // add time, bestTime, previousTime props
+        time={time}
+        bestTime={bestTime}
+        previousTime={previousTime}
         openModal={() => setShowModal(true)}
       />
       <CardGame
-        // add onGameStart, onGameEnd props
-        cardTexts={cardTexts}
+      onGameStart={handleGameStart}
+      onGameEnd={handleGameEnd}
+      cardTexts={cardTexts}
       />
       <Modal isShown={showModal} close={() => setShowModal(false)} />
     </>
