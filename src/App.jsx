@@ -8,6 +8,7 @@ export default function App() {
   const [showModal, setShowModal] = useState(false);
   const [bestTime, setBestTime] = useState(false);
   const [previousTime, setPreviousTime] = useState(null);
+  const [gameActive, setGameActive] = useState(false);
 
   const {
     time,
@@ -28,10 +29,12 @@ export default function App() {
   const handleGameStart = () => {
     timerReset();
     timerStart();
+    setGameActive(true);
   };
 
   const handleGameEnd = () => {
     timerStop();
+    setGameActive(false);
     setPreviousTime(time);
     if (bestTime === null || time < bestTime) {
       setBestTime(time);
@@ -41,7 +44,7 @@ export default function App() {
   return (
     <>
       <Header
-        time={time}
+        time={gameActive ? time : null}
         bestTime={bestTime}
         previousTime={previousTime}
         openModal={() => setShowModal(true)}
