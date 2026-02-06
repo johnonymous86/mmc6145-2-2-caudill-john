@@ -6,7 +6,7 @@ import { useTimer } from "./util/customHooks";
 
 export default function App() {
   const [showModal, setShowModal] = useState(false);
-  const [bestTime, setBestTime] = useState(false);
+  const [bestTime, setBestTime] = useState(null);
   const [previousTime, setPreviousTime] = useState(null);
   const [gameActive, setGameActive] = useState(false);
 
@@ -33,13 +33,21 @@ export default function App() {
   };
 
   const handleGameEnd = () => {
+    const finalTime = time;  // Capture the time before stopping
     timerStop();
     setGameActive(false);
-    setPreviousTime(time);
-    if (bestTime === null || time < bestTime) {
-      setBestTime(time);
-    }
-  }; 
+    
+    // Save the current time as previous time
+    setPreviousTime(finalTime);
+    
+    // Update best time using functional setState
+    setBestTime(prevBest => {
+      if (prevBest === null || finalTime < prevBest) {
+        return finalTime;
+      }
+      return prevBest;
+    });
+  };
 
   return (
     <>
@@ -50,12 +58,13 @@ export default function App() {
         openModal={() => setShowModal(true)}
       />
       <CardGame
-      onGameStart={handleGameStart}
-      onGameEnd={handleGameEnd}
-      cardTexts={cardTexts}
+        onGameStart={handleGameStart}
+        onGameEnd={handleGameEnd}
+        cardTexts={cardTexts}
       />
       <Modal isShown={showModal} close={() => setShowModal(false)} />
     </>
   );
 }
+
 
